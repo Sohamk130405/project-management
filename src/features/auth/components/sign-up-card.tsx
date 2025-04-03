@@ -24,31 +24,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Link from "next/link";
+import { signUpSchema } from "@/features/schemas";
+import { useRegister } from "../api/use-register";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, "name is required")
-    .max(256, "Maximum 256 characters allowed"),
-  email: z.string().trim().email(),
-  password: z
-    .string()
-    .trim()
-    .min(8, "Minimum 8 characters required")
-    .max(256, "Maximum 256 characters allowed"),
-});
 const SignUpCard = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutate } = useRegister();
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
   });
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    alert(values);
+  const onSubmit = (values: z.infer<typeof signUpSchema>) => {
+    mutate(values);
   };
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
