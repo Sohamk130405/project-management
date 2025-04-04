@@ -16,7 +16,7 @@ const UserButton = () => {
   const { data: user, isLoading } = useCurrent();
   const { mutate: logout } = useLogout();
   if (isLoading) return <Loader />;
-  if (!isLoading && !user) {
+  if (!user) {
     return null;
   }
   const { name, email } = user;
