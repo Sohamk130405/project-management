@@ -18,6 +18,9 @@ export const useLogout = () => {
       queryClient.invalidateQueries({
         queryKey: ["current"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["workspaces"],
+      });
     },
   });
 
