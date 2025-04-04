@@ -1,29 +1,13 @@
-"use client";
+import { getCurrent } from "@/features/auth/actions";
+import UserButton from "@/features/auth/components/user-button";
+import { redirect } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
-import { useCurrent } from "@/features/auth/api/use-current";
-import { useLogout } from "@/features/auth/api/use-logout";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-const Home = () => {
-  const { data, isLoading } = useCurrent();
-  const { mutate } = useLogout();
-  const router = useRouter();
-  useEffect(() => {
-    if (!data && !isLoading) router.push("/sign-in");
-  }, [data, isLoading, router]);
-
+const Home = async () => {
+  const user = await getCurrent();
+  if (!user) redirect("/sign-in");
   return (
     <div className="flex gap-4">
-      {!isLoading && data && (
-        <>
-          <h1>User: {data?.name}</h1>
-          <Button variant="destructive" onClick={() => mutate()}>
-            Logout
-          </Button>
-        </>
-      )}
+      <UserButton />
     </div>
   );
 };
