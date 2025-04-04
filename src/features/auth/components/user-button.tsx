@@ -11,15 +11,12 @@ import Loader from "@/components/loader";
 import DottedSeparator from "@/components/dotted-separator";
 import { LogOut } from "lucide-react";
 import { useLogout } from "../api/use-logout";
-import { useRouter } from "next/navigation";
 
 const UserButton = () => {
   const { data: user, isLoading } = useCurrent();
   const { mutate: logout } = useLogout();
-  const router = useRouter();
   if (isLoading) return <Loader />;
-  if (!user) {
-    router.push("/sign-in");
+  if (!isLoading && !user) {
     return null;
   }
   const { name, email } = user;
