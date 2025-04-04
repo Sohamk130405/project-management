@@ -24,7 +24,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Link from "next/link";
-import { signUpSchema } from "@/features/schemas";
+import { signUpSchema } from "@/features/auth/schemas";
 import { useRegister } from "../api/use-register";
 
 const SignUpCard = () => {
