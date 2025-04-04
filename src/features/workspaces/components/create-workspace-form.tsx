@@ -20,6 +20,7 @@ import { ChangeEvent, useRef } from "react";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
@@ -27,6 +28,7 @@ interface CreateWorkspaceFormProps {
 
 const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   const { mutate, isPending } = useCreateWorkspace();
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof workspaceSchema>>({
     resolver: zodResolver(workspaceSchema),
@@ -41,8 +43,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       image: values.image instanceof File ? values.image : "",
     };
     mutate(finalValues, {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         form.reset();
+        router.push(`/workspaces/${data.$id}`);
       },
     });
   };
