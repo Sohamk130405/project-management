@@ -32,7 +32,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
 
     const session = getCookie(c, AUTH_COOKIE_NAME);
     if (!session) {
-      return c.json({ success: false, message: "Unauthorized" }, 401);
+      return c.json({ success: false, error: "Unauthorized" }, 401);
     }
     client.setSession(session);
 
