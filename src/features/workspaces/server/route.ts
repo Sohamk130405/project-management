@@ -7,6 +7,8 @@ import { BUCKET_ID, DATABASE_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config";
 import { MemberRole } from "@/features/members/types";
 import { generateInviteCode } from "@/lib/utils";
 import { getMember } from "@/features/members/utils";
+import { z } from "zod";
+import { Workspace } from "../types";
 
 const app = new Hono()
   .get("/", sessionMiddleware, async (c) => {
@@ -154,6 +156,40 @@ const app = new Hono()
     );
 
     return c.json({ data: workspace }, 200);
-  });
+  })
+  .post(
+    "/:workspaceId/join",
+    sessionMiddleware,
+    zValidator("json", z.object({ code: z.string() })),
+    async (c) => {
+      const user = c.get("user");
+      const databases = c.get("databases");
+      const { workspaceId } = c.req.param();
+      const { code } = c.req.valid("json");
+
+      const member = await getMember({
+        databases,
+        userId: user.$id,
+        workspaceId,
+      });
+      if (member) return c.json({ error: "Already a member" }, 400);
+
+      const workspace = await databases.getDocument<Workspace>(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId
+      );
+
+      if (code !== workspace.inviteCode)
+        return c.json({ error: "Invalid invite code" }, 400);
+
+      await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
+        userId: user.$id,
+        workspaceId: workspace.$id,
+        role: MemberRole.MEMBER,
+      });
+      return c.json({ data: workspace }, 200);
+    }
+  );
 
 export default app;
