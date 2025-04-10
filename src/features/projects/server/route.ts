@@ -78,6 +78,84 @@ const app = new Hono()
 
       return c.json({ data: project }, 200);
     }
-  );
+  )
+  .patch(
+    "/:projectId",
+    sessionMiddleware,
+    zValidator("form", projectSchema),
+    async (c) => {
+      const databases = c.get("databases");
+      const user = c.get("user");
+      const storage = c.get("storage");
+
+      const { projectId } = c.req.param();
+      const { name, image, workspaceId } = c.req.valid("form");
+
+      const existingProject = await databases.getDocument(
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId
+      );
+
+      if (!existingProject) return c.json({ error: "Project Not Found" }, 404);
+
+      const member = await getMember({
+        databases,
+        userId: user.$id,
+        workspaceId,
+      });
+
+      if (!member) return c.json({ error: "Unauthorized" }, 401);
+
+      let uploadedImageUrl: string | undefined;
+
+      if (image instanceof File) {
+        const file = await storage.createFile(BUCKET_ID, ID.unique(), image);
+        const arrayBuffer = await storage.getFileView(BUCKET_ID, file.$id);
+
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          arrayBuffer
+        ).toString("base64")}`;
+      } else {
+        uploadedImageUrl = image;
+      }
+
+      const project = await databases.updateDocument(
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId,
+        {
+          name,
+          imageUrl: uploadedImageUrl,
+        }
+      );
+      return c.json({ data: project }, 200);
+    }
+  )
+  .delete("/:projectId", sessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const databases = c.get("databases");
+    const { projectId } = c.req.param();
+
+    const existingProject = await databases.getDocument(
+      DATABASE_ID,
+      PROJECTS_ID,
+      projectId
+    );
+
+    if (!existingProject) return c.json({ error: "Project Not Found" }, 404);
+
+    const member = await getMember({
+      databases,
+      workspaceId: existingProject.workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member) return c.json({ error: "Unauthorized" }, 401);
+
+    await databases.deleteDocument(DATABASE_ID, PROJECTS_ID, projectId);
+
+    return c.json({ data: { $id: projectId } }, 200);
+  });
 
 export default app;
