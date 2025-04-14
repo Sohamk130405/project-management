@@ -158,7 +158,7 @@ const app = new Hono()
         }
       );
 
-      return c.json({ data: task }, 201);
+      return c.json({ data: task });
     }
   );
 

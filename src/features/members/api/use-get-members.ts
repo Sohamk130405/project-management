@@ -8,9 +8,7 @@ export const useGetMembers = ({ workspaceId }: { workspaceId: string }) => {
       const response = await client.api.members["$get"]({
         query: { workspaceId },
       });
-      if (!response.ok) {
-        return null;
-      }
+      if (!response.ok) throw new Error("Failed to fetch members");
       const { data } = await response.json();
       return data;
     },
