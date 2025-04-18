@@ -14,7 +14,7 @@ const MemberAvatar = ({
   return (
     <Avatar
       className={cn(
-        "size-10 rounded-full transition border-neutral-300",
+        "size-8 rounded-full transition border-neutral-300",
         className
       )}
     >
