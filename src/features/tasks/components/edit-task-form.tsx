@@ -30,6 +30,7 @@ import MemberAvatar from "@/features/members/components/member-avatar";
 import { Task, TaskStatus } from "../types";
 import ProjectAvatar from "@/features/projects/components/project-avatar";
 import { useUpdateTask } from "../api/use-update-task";
+import { useRouter } from "next/navigation";
 
 interface EditTaskFormProps {
   projectOptions: {
@@ -53,7 +54,7 @@ const EditTaskForm = ({
 }: EditTaskFormProps) => {
   const { mutate, isPending } = useUpdateTask();
 
-  // const router = useRouter();
+  const router = useRouter();
   const form = useForm<z.infer<typeof createTaskSchema>>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -69,10 +70,10 @@ const EditTaskForm = ({
     mutate(
       { json: values, param: { taskId: initialValues.$id } },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           form.reset();
           onCancel?.();
-          // router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
+          router.push(`/workspaces/${data.workspaceId}/tasks/${data.$id}`);
         },
       }
     );
