@@ -7,6 +7,7 @@ import { ID, Query } from "node-appwrite";
 import { z } from "zod";
 import { projectSchema } from "../schemas";
 import { MemberRole } from "@/features/members/types";
+import { Project } from "../types";
 
 const app = new Hono()
   .get(
@@ -34,6 +35,24 @@ const app = new Hono()
       return c.json({ data: projects }, 200);
     }
   )
+  .get("/:projectId", sessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const databases = c.get("databases");
+    const { projectId } = c.req.param();
+
+    const project = await databases.getDocument<Project>(
+      DATABASE_ID,
+      PROJECTS_ID,
+      projectId
+    );
+    const member = await getMember({
+      databases,
+      userId: user.$id,
+      workspaceId: project.workspaceId,
+    });
+    if (!member) return c.json({ error: "Unauthoirized" }, 401);
+    return c.json({ data: project });
+  })
   .post(
     "/",
     sessionMiddleware,

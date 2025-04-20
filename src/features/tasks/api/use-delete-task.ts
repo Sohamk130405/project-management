@@ -27,7 +27,7 @@ export const useDeleteTask = () => {
         queryKey: ["tasks"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["tasks", data.$id],
+        queryKey: ["task", data.$id],
       });
     },
     onError: () => {

@@ -27,7 +27,7 @@ export const useDeleteWorkspace = () => {
         queryKey: ["workspaces"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["workspaces", data.$id],
+        queryKey: ["workspace", data.$id],
       });
     },
     onError: () => {

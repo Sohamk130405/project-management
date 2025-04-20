@@ -7,7 +7,7 @@ export const useCurrent = () => {
     queryFn: async () => {
       const response = await client.api.auth.current["$get"]();
       if (!response.ok) {
-        return null;
+        throw new Error("Failed to fetch current user");
       }
       const data = await response.json();
       return data;

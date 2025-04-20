@@ -88,14 +88,7 @@ const EditWorkspaceForm = ({
   const handleReset = async () => {
     const ok = await confirmReset();
     if (!ok) return;
-    resetInviteCode(
-      { param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          router.refresh();
-        },
-      }
-    );
+    resetInviteCode({ param: { workspaceId: initialValues.$id } });
   };
 
   const onSubmit = async (values: z.infer<typeof workspaceSchema>) => {
@@ -103,15 +96,7 @@ const EditWorkspaceForm = ({
       ...values,
       image: values.image instanceof File ? values.image : "",
     };
-    mutate(
-      { form: finalValues, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: ({ data }) => {
-          form.reset();
-          router.push(`/workspaces/${data.$id}`);
-        },
-      }
-    );
+    mutate({ form: finalValues, param: { workspaceId: initialValues.$id } });
   };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {

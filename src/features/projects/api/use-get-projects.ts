@@ -8,9 +8,7 @@ export const useGetProjects = ({ workspaceId }: { workspaceId: string }) => {
       const response = await client.api.projects["$get"]({
         query: { workspaceId },
       });
-      if (!response.ok) {
-        return null;
-      }
+      if (!response.ok) throw new Error("Failed to fetch projects");
       const { data } = await response.json();
       return data;
     },
