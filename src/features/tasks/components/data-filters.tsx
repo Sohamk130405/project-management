@@ -38,7 +38,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
     label: member.name,
   }));
 
-  const [{ assigneeId, dueDate, projectId, search, status }, setFilters] =
+  const [{ assigneeId, dueDate, projectId, status }, setFilters] =
     useTaskFilters();
 
   const onStatusChange = (value: string) => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Project } from "@/features/projects/types";
 import { TaskStatus } from "../types";
 import { cn } from "@/lib/utils";
@@ -6,12 +5,13 @@ import MemberAvatar from "@/features/members/components/member-avatar";
 import ProjectAvatar from "@/features/projects/components/project-avatar";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useRouter } from "next/navigation";
+import { Member } from "@/features/members/types";
 
 interface EventCardProps {
   $id: string;
   title: string;
   status: TaskStatus;
-  assignee: any;
+  assignee: Member;
   project: Project;
 }
 

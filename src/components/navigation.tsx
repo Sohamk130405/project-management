@@ -14,25 +14,25 @@ import {
 const routes = [
   {
     label: "Home",
-    href: "/",
+    href: "",
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
   {
     label: "Tasks",
-    href: "/tasks",
+    href: "tasks",
     icon: GoCheckCircle,
     activeIcon: GoCheckCircleFill,
   },
   {
     label: "Settings",
-    href: "/settings",
+    href: "settings",
     icon: SettingsIcon,
     activeIcon: SettingsIcon,
   },
   {
     label: "Members",
-    href: "/members",
+    href: "members",
     icon: UsersIcon,
     activeIcon: UsersIcon,
   },
@@ -45,7 +45,11 @@ const Navigation = () => {
     <ul className="flex flex-col">
       {routes.map((route) => {
         const href = `/workspaces/${workspaceId}/${route.href}`;
-        const isActive = pathname.includes(route.href);
+        const currentPath = pathname;
+        const isHome = route.href === "";
+        const isActive = isHome
+          ? currentPath === `/workspaces/${workspaceId}` // exact match for Home
+          : currentPath === href || currentPath.startsWith(`${href}/`);
         const Icon = isActive ? route.activeIcon : route.icon;
         return (
           <Link href={href} key={href}>
