@@ -30,6 +30,12 @@ export const useUpdateProject = () => {
       queryClient.invalidateQueries({
         queryKey: ["project", data.$id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["project-analytics"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["workspace-analytics"],
+      });
     },
     onError: () => {
       toast.error("Failed to update Project. Please try again.");

@@ -29,6 +29,12 @@ export const useDeleteMember = () => {
       queryClient.invalidateQueries({
         queryKey: ["members", data.$id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["project-analytics"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["workspace-analytics"],
+      });
     },
     onError: () => {
       toast.error("Failed to remove member. Please try again.");

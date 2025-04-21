@@ -30,6 +30,12 @@ export const useUpdateMember = () => {
       queryClient.invalidateQueries({
         queryKey: ["members", data.$id],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["project-analytics"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["workspace-analytics"],
+      });
     },
     onError: () => {
       toast.error("Failed to update role of member. Please try again.");
